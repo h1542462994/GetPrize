@@ -169,15 +169,19 @@ public class Cache {
                 if(line.startsWith("#")){
                     if(history != null){
                         data.add(history);
-                        history.title = line.substring(1);
                     }
                     history = new History();
+                    history.title = line.substring(1);
                 } else {
                     assert history != null;
                     history.data.add(line.split(";"));
                 }
 
             } while (true);
+
+            if(history != null){
+                data.add(history);
+            }
 
             this.data = data;
         } catch (Exception e){
