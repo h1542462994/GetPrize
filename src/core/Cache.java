@@ -1,6 +1,5 @@
 package core;
 
-import com.sun.istack.internal.NotNull;
 import tool.Tool;
 
 import java.io.*;
@@ -28,7 +27,7 @@ public class Cache {
         resultTableModel = new ResultTableModel(new History());
     }
 
-    public void push(@NotNull History history){
+    public void push( History history){
         data.add(history);
         int rowIndex = data.size() - 1;
         historyTableModel.fireTableRowsInserted(rowIndex, rowIndex);
