@@ -2,7 +2,7 @@ package ui;
 
 import core.Cache;
 import core.History;
-import javafx.util.Pair;
+import core.Pair;
 import tool.Tool;
 
 import javax.swing.*;
@@ -13,26 +13,13 @@ import java.awt.*;
 import java.io.*;
 
 public class MainFrame extends JFrame  {
-    private class JReadTable extends JTable{
-        public JReadTable(Object[][] data, Object[] columnName){
-            super(data,columnName);
-        }
-
-        @Override
-        public boolean isCellEditable(int row, int column) {
-            return false;
-        }
-    }
 
     private Cache cache = new Cache();
-    private JButton buttonMenu1;
-    private JButton buttonMenu2;
     private JButton buttonPeopleImport;
     private JButton buttonPeopleExport;
     private JButton buttonSubmit;
     private JTable tablePeople;
     private JTable tableHistory;
-    private JTable tableResult;
     private JPanel menuItemPanel;
     private JLabel labelPeopleCount;
     private JLabel labelTitle;
@@ -41,11 +28,9 @@ public class MainFrame extends JFrame  {
     private JTextField textPrize1;
     private JTextField textPrize2;
     private JTextField textPrize3;
-    private JPanel card1;
-    private JPanel card2;
 
 
-    public static void main(String args[]){
+    public static void main(String[] args){
         MainFrame frame = new MainFrame();
         frame.init();
         frame.registryEvent();
@@ -99,7 +84,7 @@ public class MainFrame extends JFrame  {
 
         textTitle.getDocument().addDocumentListener(new DocumentListener() {
             @Override
-            public void insertUpdate(DocumentEvent e) {
+            public final void insertUpdate(DocumentEvent e) {
                 cache.title = textTitle.getText();
                 updateSubmitState();
             }
@@ -212,7 +197,7 @@ public class MainFrame extends JFrame  {
 
         if (!text.isEmpty()) {
             if (text.length() <= 7 && text.matches("[0-9]*")){
-                prize = Integer.valueOf(text);
+                prize = Integer.parseInt(text);
             }
         }
 
@@ -240,7 +225,7 @@ public class MainFrame extends JFrame  {
             buttonSubmit.setEnabled(false);
         }
 
-        labelPeopleCount.setText(String.format("有效%s人",String.valueOf(cache.peopleTableModel.available().size())));
+        labelPeopleCount.setText(String.format("有效%s人", cache.peopleTableModel.available().size()));
     }
 
     //region Views
@@ -289,13 +274,13 @@ public class MainFrame extends JFrame  {
 
     private Pair<JPanel, GridBagConstraints> GMenuPanel(){
         JPanel root = new JPanel();
-        buttonMenu1 = new JButton();
+        JButton buttonMenu1 = new JButton();
         buttonMenu1.setText("主页面");
         buttonMenu1.addActionListener(e1->{
             CardLayout layout = (CardLayout) menuItemPanel.getLayout();
             layout.first(menuItemPanel);
         });
-        buttonMenu2 = new JButton();
+        JButton buttonMenu2 = new JButton();
         buttonMenu2.setText("名单页面");
         buttonMenu2.addActionListener(e2->{
             CardLayout layout = (CardLayout) menuItemPanel.getLayout();
@@ -369,6 +354,7 @@ public class MainFrame extends JFrame  {
         JPanel tablePanel = new JPanel(new BorderLayout());
 //        String[] tableTitle = new String[] { "记录"};
 //        String[][] data = new String[][] {{"1-FirstElement"}};
+        JScrollPane scrollPane = new JScrollPane(tablePanel);
         tableHistory = new JTable(cache.historyTableModel);
         tableHistory.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 16));
         tableHistory.setRowHeight(24);
@@ -433,16 +419,14 @@ public class MainFrame extends JFrame  {
         layout.setConstraints(textPrize3, constraints2);
 
 
-
-        root.add(tablePanel);
-        layout.setConstraints(tablePanel, constraints3);
+        root.add(scrollPane);
+        layout.setConstraints(scrollPane, constraints3);
 
         root.add(labelError);
         layout.setConstraints(labelError, constraints2);
 
         root.add(buttonSubmit);
         layout.setConstraints(buttonSubmit,constraints2);
-
 
         return root;
     }
@@ -457,7 +441,7 @@ public class MainFrame extends JFrame  {
         //String[] tableTitle = new String[] { "姓名","手机号码"};
         //String[][] data = new String[][] {{"张三","12345678901"}, {"",""}};
         JPanel tablePanel = new JPanel(new BorderLayout());
-
+        JScrollPane scrollPane = new JScrollPane(tablePanel);
         tablePeople = new JTable(cache.peopleTableModel);
         tablePeople.getTableHeader().setReorderingAllowed(false);
         tablePeople.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -498,8 +482,8 @@ public class MainFrame extends JFrame  {
         bConstraints.weightx = 1.0;
         bConstraints.weighty = 1.0;
         bConstraints.insets = new Insets(10,10,10,10);
-        root.add(tablePanel);
-        layout.setConstraints(tablePanel, bConstraints);
+        root.add(scrollPane);
+        layout.setConstraints(scrollPane, bConstraints);
 
         return root;
     }
@@ -523,7 +507,7 @@ public class MainFrame extends JFrame  {
         //String[][] data = new String[][] {{"一等奖","张三","1234567890"}};
         JPanel tablePanel = new JPanel(new BorderLayout());
 
-        tableResult = new JTable(cache.resultTableModel);
+        JTable tableResult = new JTable(cache.resultTableModel);
         tableResult.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 30));
         tableResult.setRowHeight(40);
         tableResult.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
